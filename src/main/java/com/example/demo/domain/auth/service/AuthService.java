@@ -3,7 +3,9 @@ package com.example.demo.domain.auth.service;
 import com.example.demo.common.exception.Customexception;
 import com.example.demo.common.exception.ErrorCode;
 import com.example.demo.domain.auth.model.request.CreateUserRequest;
+import com.example.demo.domain.auth.model.request.LoginRequest;
 import com.example.demo.domain.auth.model.response.CreateUserResponse;
+import com.example.demo.domain.auth.model.response.LoginResponse;
 import com.example.demo.domain.repository.UserRepository;
 import com.example.demo.domain.repository.entity.User;
 import com.example.demo.domain.repository.entity.UserCredentials;
@@ -54,8 +56,31 @@ public class AuthService {
         return new CreateUserResponse(request.name());
     }
 
+    public LoginResponse login(LoginRequest request) {
+        Optional<User> user = userRepository.findByName(request.name());
+
+        if (!user.isPresent()) {
+            log.error("NOT_EXIST_USER: {}", request.name());
+            throw new Customexception(ErrorCode.NOT_EXIST_USER);
+        }
+
+        user.map(u -> {
+            String hashedValie = hasher.getHashingValue(request.password());
+
+            if (!u.getUserCredentials().getHashed_password().equals(hashedValie)) {
+                throw new Customexception(ErrorCode.MISS_MATCH_PASSWORD);
+            }
+
+        }).orElseThrow(() -> {
+            throw new Customexception(ErrorCode.MISS_MATCH_PASSWORD);
+        });
+
+        return new LoginResponse(ErrorCode.SUCCESS, "Token");
+    }
+
     private User newUser(String name) {
-        User newUser = User.builder()
+        User newUser = User
+                .builder()
                 .name(name)
                 .created_at(new Timestamp(System.currentTimeMillis()))
                 .build();
