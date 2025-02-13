@@ -5,6 +5,7 @@ import com.example.demo.domain.auth.model.response.CreateUserResponse;
 import com.example.demo.domain.repository.UserRepository;
 import com.example.demo.domain.repository.entity.User;
 import com.example.demo.domain.repository.entity.UserCredentials;
+import com.example.demo.security.Hasher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final Hasher hasher;
 
     @Transactional(transactionManager = "createUserTransactionManager") // 커스텀한 트랜잭션매니저 사용
     public CreateUserResponse createUser(CreateUserRequest request) {
@@ -59,7 +61,17 @@ public class AuthService {
         return newUser;
     }
 
+    // 패스워드 hashing
     private UserCredentials newUserCredentials(String password, User user) {
-        // TODO hash
+        String hashedValie = hasher.getHashingValue(password);
+
+        UserCredentials cre = UserCredentials
+                .builder()
+                .user(user)
+                .hashed_password(hashedValie)
+                .build();
+
+        return cre;
     }
+
 }
