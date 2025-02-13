@@ -1,5 +1,7 @@
 package com.example.demo.domain.auth.service;
 
+import com.example.demo.common.exception.Customexception;
+import com.example.demo.common.exception.ErrorCode;
 import com.example.demo.domain.auth.model.request.CreateUserRequest;
 import com.example.demo.domain.auth.model.response.CreateUserResponse;
 import com.example.demo.domain.repository.UserRepository;
@@ -28,7 +30,8 @@ public class AuthService {
         Optional<User> user = userRepository.findByName(request.name());
 
         if (user.isPresent()) {
-            // TODO 에러
+            log.error("USER_ALREADY_EXISTS: {}", request.name());
+            throw new Customexception(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         try {
@@ -40,13 +43,12 @@ public class AuthService {
             User savedUser = this.userRepository.save(newUser);
 
             if (savedUser == null) {
-                // TODO 에러처리
+                log.error("USER_SAVED_FAILED: {}", request.name());
+                throw new Customexception(ErrorCode.USER_SAVED_FAILED);
             }
 
         } catch (Exception e) {
-
-            // TODO 에러
-
+            throw new Customexception(ErrorCode.USER_SAVED_FAILED);
         }
 
         return new CreateUserResponse(request.name());
