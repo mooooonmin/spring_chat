@@ -65,9 +65,9 @@ public class AuthService {
         }
 
         user.map(u -> {
-            String hashedValie = hasher.getHashingValue(request.password());
+            String hashedValue = hasher.getHashingValue(request.password());
 
-            if (!u.getUserCredentials().getHashed_password().equals(hashedValie)) {
+            if (!u.getUserCredentials().getHashed_password().equals(hashedValue)) {
                 throw new Customexception(ErrorCode.MISS_MATCH_PASSWORD);
             }
 
