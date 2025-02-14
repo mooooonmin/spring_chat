@@ -11,8 +11,10 @@ import com.example.demo.common.Constants.Constants;
 import com.example.demo.common.exception.Customexception;
 import com.example.demo.common.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 
@@ -100,6 +102,16 @@ public class JWTProvider {
 
     public static DecodedJWT decodedJWT(String token) {
         return JWT.decode(token);
+    }
+
+    public static String extractToken(String header) {
+
+        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        } else {
+            throw new IllegalArgumentException("Invalid Auth Header");
+        }
+
     }
 
     public static String getUserFromToken(String token) {
