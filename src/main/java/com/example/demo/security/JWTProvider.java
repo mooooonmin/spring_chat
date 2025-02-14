@@ -102,4 +102,9 @@ public class JWTProvider {
         return JWT.decode(token);
     }
 
+    public static String getUserFromToken(String token) {
+        DecodedJWT jwt = decodedJWT(token);
+        return jwt.getSubject();
+    }
+
 }

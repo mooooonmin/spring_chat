@@ -10,6 +10,7 @@ import com.example.demo.domain.repository.UserRepository;
 import com.example.demo.domain.repository.entity.User;
 import com.example.demo.domain.repository.entity.UserCredentials;
 import com.example.demo.security.Hasher;
+import com.example.demo.security.JWTProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,7 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
+
         Optional<User> user = userRepository.findByName(request.name());
 
         if (!user.isPresent()) {
@@ -71,11 +73,18 @@ public class AuthService {
                 throw new Customexception(ErrorCode.MISS_MATCH_PASSWORD);
             }
 
+            return hashedValue;
+
         }).orElseThrow(() -> {
             throw new Customexception(ErrorCode.MISS_MATCH_PASSWORD);
         });
 
+        String token = JWTProvider.createRefreshToken(request.name());
         return new LoginResponse(ErrorCode.SUCCESS, "Token");
+    }
+
+    public String getUserFromToken(String token) {
+        return JWTProvider.getUserFromToken(token);
     }
 
     private User newUser(String name) {
