@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 @Slf4j
 public class WssControllerV1 {
 
-    private final ChatserviceV1 chatserviceV1
+    private final ChatserviceV1 chatserviceV1;
 
     @MessageMapping("/chat/message/{from}")
     @SendTo("/sub/chat")
