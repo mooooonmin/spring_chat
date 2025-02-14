@@ -1,11 +1,12 @@
 package com.example.demo.config;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.security.core.parameters.P;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -39,9 +40,21 @@ public class MySQLConfig {
         return new TransactionTemplate(transactionManager);
     }
 
+    /*
+    * 커스텀 트랜잭션 매니저
+    * */
+
+    @Bean(name = "createChatTransactionManager")
+    public PlatformTransactionManager createChatTransactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
+        return transactionManager;
+    }
+
     @Bean(name = "createUserTransactionManager")
     public PlatformTransactionManager createUserTransactionManager(DataSource dataSource) {
         DataSourceTransactionManager manager = new DataSourceTransactionManager(dataSource);
         return manager;
     }
+
 }

@@ -5,6 +5,7 @@ import com.example.demo.domain.repository.ChatRepository;
 import com.example.demo.domain.repository.entity.Chat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 
@@ -14,6 +15,7 @@ public class ChatserviceV1 {
 
     private final ChatRepository chatRepository;
 
+    @Transactional(transactionManager = "createChatTransactionManager")
     public void saveChatMessage(Message msg) {
 
         Chat chat = Chat.builder()
