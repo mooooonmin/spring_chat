@@ -7,8 +7,9 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
 
 @Configuration
-@EnableWebSocket
-@RequiredArgsConstructor
+@EnableWebSocketMessageBroker
+//@EnableWebSocket
+//@RequiredArgsConstructor
 public class WssConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override

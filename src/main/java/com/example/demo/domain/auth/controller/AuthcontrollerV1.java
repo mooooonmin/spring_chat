@@ -41,7 +41,7 @@ public class AuthcontrollerV1 {
             summary = "get user name",
             description = "token 기반으로 user 가져옴"
     )
-    @GetMapping("/get-user-name/{token}")
+    @GetMapping("/verify-token/{token}")
     public String getUserFromToken(@PathVariable("toekn") String token) {
         return authService.getUserFromToken(token);
     }
